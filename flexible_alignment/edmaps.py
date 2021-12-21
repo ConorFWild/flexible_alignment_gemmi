@@ -8,8 +8,8 @@ import gemmi
 import numpy as np
 
 from flexible_alignment.dataset import StructureFactors, Reflections, Dataset
-from flexible_alignment.edalignment.alignments import Alignment
-from flexible_alignment.edalignment.grid import Grid, Partitioning
+from flexible_alignment.local_alignment import Alignment
+from flexible_alignment.grid import Grid, Partitioning
 
 
 @dataclasses.dataclass()
