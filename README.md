@@ -7,7 +7,7 @@ Just git pull and pip install!
 ```bash
 conda create -n flexible_alignment python=3.9
 conda activate flexible_alignment
-conda install -c conda-forge -y fire numpy scipy pandas gemmi
+conda install -c conda-forge -y fire numpy scipy pandas gemmi sklearn
 git clone https://github.com/ConorFWild/flexible_alignment_gemmi.git
 cd /path/to/cloned/repository
 pip install .
