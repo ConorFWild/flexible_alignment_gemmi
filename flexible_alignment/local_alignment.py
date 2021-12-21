@@ -6,7 +6,7 @@ import numpy as np
 import scipy
 from scipy import spatial
 
-from flexible_alignment.dataset import Dataset, ResidueID, Reference, Datasets
+from flexible_alignment.dataset import Dataset, ResidueID, Reference
 
 
 class AlignmentUnmatchedAtomsError(Exception):

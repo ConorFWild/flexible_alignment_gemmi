@@ -8,7 +8,6 @@ from pathlib import Path
 import gemmi
 import numpy as np
 import pandas as pd
-import scipy
 from sklearn import neighbors
 
 from flexible_alignment.constants import RESIDUE_NAMES
