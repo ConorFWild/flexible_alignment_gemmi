@@ -19,7 +19,7 @@ class Partitioning:
     protein_mask: gemmi.Int8Grid
     inner_mask: gemmi.Int8Grid
     contact_mask: gemmi.Int8Grid
-    symmetry_mask: gemmi.Int8Grid
+    # symmetry_mask: gemmi.Int8Grid  # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
     total_mask: np.ndarray
 
     def __getitem__(self, item: ResidueID):
@@ -63,21 +63,13 @@ class Partitioning:
                           int(grid_max_frac[2] * grid.nw), ]
 
         # Get these as fractions
-        # fractional_grid_min = [
-        #     grid.unit_cell.fractionalize(grid_min_coord[0]),
-        #     grid.unit_cell.fractionalize(grid_min_coord[1]),
-        #     grid.unit_cell.fractionalize(grid_min_coord[2]),
-        # ]
+
         fractional_grid_min = [
             grid_min_coord[0] * (1.0 / grid.nu),
             grid_min_coord[1] * (1.0 / grid.nv),
             grid_min_coord[2] * (1.0 / grid.nw),
         ]
-        # fractional_grid_max = [
-        #     grid.unit_cell.fractionalize(grid_max_coord[0]),
-        #     grid.unit_cell.fractionalize(grid_max_coord[1]),
-        #     grid.unit_cell.fractionalize(grid_max_coord[2]),
-        #     ]
+
         fractional_grid_max = [
             grid_max_coord[0] * (1.0 / grid.nu),
             grid_max_coord[1] * (1.0 / grid.nv),
@@ -103,12 +95,7 @@ class Partitioning:
                        coord_array[:, 1],
                        coord_array[:, 2],
                        )
-        # print((
-        #     f"coord_tuple - points in the refence grid\n"
-        #     f"min: {np.min(coord_tuple[0])} {np.min(coord_tuple[1])} {np.min(coord_tuple[2])} \n"
-        #     f"Max: {np.max(coord_tuple[0])} {np.max(coord_tuple[1])} {np.max(coord_tuple[2])} \n"
-        #     f"Length: {coord_tuple[0].shape}"
-        # ))
+
 
         # Get the corresponding protein grid
         protein_grid = gemmi.Int8Grid(
@@ -144,12 +131,6 @@ class Partitioning:
                                  np.mod(coord_tuple[1], grid.nv),
                                  np.mod(coord_tuple[2], grid.nw),
                                  )
-        # print((
-        #     f"coord_unit_cell_tuple - points in the reference grid normalised to the unit cell\n"
-        #     f"min: {np.min(coord_unit_cell_tuple[0])} {np.min(coord_unit_cell_tuple[1])} {np.min(coord_unit_cell_tuple[2])} \n"
-        #     f"Max: {np.max(coord_unit_cell_tuple[0])} {np.max(coord_unit_cell_tuple[1])} {np.max(coord_unit_cell_tuple[2])} \n"
-        #     f"Length: {coord_unit_cell_tuple[0].shape}"
-        # ))
 
         # Get the corresponging protein_grid points
         coord_mask_grid_tuple = (
@@ -157,12 +138,6 @@ class Partitioning:
             coord_tuple[1] - grid_min_coord[1],
             coord_tuple[2] - grid_min_coord[2],
         )
-        # print((
-        #     f"coord_mask_grid_tuple - points in the portein frame grid\n"
-        #     f"min: {np.min(coord_mask_grid_tuple[0])} {np.min(coord_mask_grid_tuple[1])} {np.min(coord_mask_grid_tuple[2])} \n"
-        #     f"Max: {np.max(coord_mask_grid_tuple[0])} {np.max(coord_mask_grid_tuple[1])} {np.max(coord_mask_grid_tuple[2])} \n"
-        #     f"Length: {coord_mask_grid_tuple[0].shape}"
-        # ))
 
         # Check which of them are in the mask
         mask_array = np.array(protein_grid, copy=False, dtype=np.int8)
@@ -175,22 +150,14 @@ class Partitioning:
             coord_tuple[1][in_mask_array],
             coord_tuple[2][in_mask_array],
         )
-        # print((
-        #     f"coord_array_in_mask - points in the reference grid in the mask\n"
-        #     f"min: {np.min(coord_array_in_mask[0])} {np.min(coord_array_in_mask[1])} {np.min(coord_array_in_mask[2])} \n"
-        #     f"Max: {np.max(coord_array_in_mask[0])} {np.max(coord_array_in_mask[1])} {np.max(coord_array_in_mask[2])} \n"
-        # ))
+
 
         coord_array_unit_cell_in_mask = (
             coord_unit_cell_tuple[0][in_mask_array],
             coord_unit_cell_tuple[1][in_mask_array],
             coord_unit_cell_tuple[2][in_mask_array],
         )
-        # print((
-        #     f"coord_array_unit_cell_in_mask - points in the reference grid nomralise to the unit cell in the mask\n"
-        #     f"min: {np.min(coord_array_unit_cell_in_mask[0])} {np.min(coord_array_unit_cell_in_mask[1])} {np.min(coord_array_unit_cell_in_mask[2])} \n"
-        #     f"Max: {np.max(coord_array_unit_cell_in_mask[0])} {np.max(coord_array_unit_cell_in_mask[1])} {np.max(coord_array_unit_cell_in_mask[2])} \n"
-        # ))
+
 
         return coord_array_in_mask, coord_array_unit_cell_in_mask
 
@@ -274,9 +241,10 @@ class Partitioning:
                                          )
         # mask_array = np.array(mask, copy=False, dtype=np.int8)
 
+        # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
         # Mask the symmetry points
-        symmetry_mask = Partitioning.get_symmetry_contact_mask(structure, grid, mask, mask_radius_symmetry)
-        symmetry_mask_array = np.array(symmetry_mask, copy=False, dtype=np.int8)
+        # symmetry_mask = Partitioning.get_symmetry_contact_mask(structure, grid, mask, mask_radius_symmetry)
+        # symmetry_mask_array = np.array(symmetry_mask, copy=False, dtype=np.int8)
 
         coord_tuple_source, coord_array_unit_cell_in_mask = Partitioning.get_coord_tuple(
             mask,
@@ -288,13 +256,17 @@ class Partitioning:
         # Mask by protein
         protein_mask_indicies = mask_array[coord_array_unit_cell_in_mask]
 
+        # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
         # Mask by symmetry
-        symmetry_mask_indicies = symmetry_mask_array[coord_array_unit_cell_in_mask]
+        # symmetry_mask_indicies = symmetry_mask_array[coord_array_unit_cell_in_mask]
 
         # Combine masks
-        combined_indicies = np.zeros(symmetry_mask_indicies.shape)
+        # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
+        # combined_indicies = np.zeros(symmetry_mask_indicies.shape)
+        combined_indicies = np.zeros(protein_mask_indicies.shape)
         combined_indicies[protein_mask_indicies == 1] = 1
-        combined_indicies[symmetry_mask_indicies == 1] = 0
+        # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
+        # combined_indicies[symmetry_mask_indicies == 1] = 0
 
         # Resample coords
         coord_tuple = (coord_tuple_source[0][combined_indicies == 1],
@@ -333,8 +305,6 @@ class Partitioning:
             if res_id not in partitions:
                 partitions[res_id] = {}
 
-            # partitions[res_id][coord] = gemmi.Position(*position)
-
             coord_unit_cell = (int(coord_array_unit_cell_in_mask[0][i]),
                                int(coord_array_unit_cell_in_mask[1][i]),
                                int(coord_array_unit_cell_in_mask[2][i]),
@@ -351,7 +321,8 @@ class Partitioning:
         return Partitioning(partitions, mask,
                             inner_mask,
                             contact_mask,
-                            symmetry_mask, total_mask)
+                            # symmetry_mask, # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
+                            total_mask)
 
     def coord_tuple(self):
 
@@ -465,77 +436,6 @@ class Partitioning:
         mask_array[mask_unit_cell_array_mask] = 1
 
         return mask
-
-    def save_maps(self, dir: Path, p1: bool = True):
-        # Protein mask
-        ccp4 = gemmi.Ccp4Mask()
-        ccp4.grid = self.protein_mask
-        if p1:
-            ccp4.grid.spacegroup = gemmi.find_spacegroup_by_name("P 1")
-        else:
-            ccp4.grid.symmetrize_max()
-        ccp4.update_ccp4_header(0, True)
-        ccp4.write_ccp4_map(str(dir / PANDDA_PROTEIN_MASK_FILE))
-
-        # Symmetry mask
-        ccp4 = gemmi.Ccp4Mask()
-        ccp4.grid = self.symmetry_mask
-        if p1:
-            ccp4.grid.spacegroup = gemmi.find_spacegroup_by_name("P 1")
-        else:
-            ccp4.grid.symmetrize_max()
-        ccp4.update_ccp4_header(0, True)
-        ccp4.write_ccp4_map(str(dir / PANDDA_SYMMETRY_MASK_FILE))
-
-        # Total mask
-        template_grid = self.symmetry_mask
-        total_mask_grid = gemmi.Int8Grid(
-            template_grid.nu,
-            template_grid.nv,
-            template_grid.nw,
-        )
-        total_mask_grid.spacegroup = template_grid.spacegroup
-        total_mask_grid.set_unit_cell(template_grid.unit_cell)
-        total_grid_array = np.array(total_mask_grid, copy=False, dtype=np.int8)
-        total_grid_array[:, :, :] = self.total_mask[:, :, :]
-
-        ccp4 = gemmi.Ccp4Mask()
-        ccp4.grid = total_mask_grid
-        if p1:
-            ccp4.grid.spacegroup = gemmi.find_spacegroup_by_name("P 1")
-        else:
-            ccp4.grid.symmetrize_max()
-        ccp4.update_ccp4_header(0, True)
-        ccp4.write_ccp4_map(str(dir / PANDDA_TOTAL_MASK_FILE))
-
-    def __getstate__(self):
-        # partitioning_python = PartitoningPython.from_gemmi(self.partitioning)
-        partitioning_python = self.partitioning
-        protein_mask_python = Int8GridPython.from_gemmi(self.protein_mask)
-        inner_mask_python = Int8GridPython.from_gemmi(self.inner_mask)
-        contact_mask_python = Int8GridPython.from_gemmi(self.contact_mask)
-        symmetry_mask_python = Int8GridPython.from_gemmi(self.symmetry_mask)
-        return (partitioning_python,
-                protein_mask_python,
-                inner_mask_python,
-                contact_mask_python,
-                symmetry_mask_python,
-                self.total_mask
-                )
-
-    def __setstate__(self, data):
-        partitioning_gemmi = data[0]
-        protein_mask_gemmi = data[1].to_gemmi()
-        inner_mask_gemmi = data[2].to_gemmi()
-        contact_mask_gemmi = data[3].to_gemmi()
-        symmetry_mask_gemmi = data[4].to_gemmi()
-
-        self.partitioning = partitioning_gemmi
-        self.protein_mask = protein_mask_gemmi
-        self.inner_mask = inner_mask_gemmi
-        self.contact_mask = contact_mask_gemmi
-        self.symmetry_mask = symmetry_mask_gemmi
-        self.total_mask = data[5]
 
 
 @dataclasses.dataclass()
