@@ -17,7 +17,7 @@ from flexible_alignment.dataset import ResidueID, Reference, Structure, Symops
 class Partitioning:
     partitioning: typing.Dict[ResidueID, typing.Dict[typing.Tuple[int], typing.Tuple[float]]]
     protein_mask: gemmi.Int8Grid
-    inner_mask: gemmi.Int8Grid
+    # inner_mask: gemmi.Int8Grid  # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
     contact_mask: gemmi.Int8Grid
     # symmetry_mask: gemmi.Int8Grid  # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
     total_mask: np.ndarray
@@ -29,13 +29,13 @@ class Partitioning:
     def from_reference(reference: Reference,
                        grid: gemmi.FloatGrid,
                        mask_radius: float,
-                       mask_radius_symmetry: float,
+                       # mask_radius_symmetry  # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
                        ):
 
         return Partitioning.from_structure(reference.dataset.structure,
                                            grid,
                                            mask_radius,
-                                           mask_radius_symmetry,
+                                           # mask_radius_symmetry, # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
                                            )
 
     @staticmethod
@@ -96,7 +96,6 @@ class Partitioning:
                        coord_array[:, 2],
                        )
 
-
         # Get the corresponding protein grid
         protein_grid = gemmi.Int8Grid(
             grid_max_coord[0] - grid_min_coord[0],
@@ -151,13 +150,11 @@ class Partitioning:
             coord_tuple[2][in_mask_array],
         )
 
-
         coord_array_unit_cell_in_mask = (
             coord_unit_cell_tuple[0][in_mask_array],
             coord_unit_cell_tuple[1][in_mask_array],
             coord_unit_cell_tuple[2][in_mask_array],
         )
-
 
         return coord_array_in_mask, coord_array_unit_cell_in_mask
 
@@ -176,7 +173,7 @@ class Partitioning:
 
     @staticmethod
     def from_structure_multiprocess(structure: Structure,
-                                    grid,#: Grid,
+                                    grid,  #: Grid,
                                     mask_radius: float,
                                     mask_radius_symmetry: float, ):
 
@@ -189,7 +186,7 @@ class Partitioning:
     def from_structure(structure: Structure,
                        grid: gemmi.FloatGrid,
                        mask_radius: float,
-                       mask_radius_symmetry: float,
+                       # mask_radius_symmetry  # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
                        ):
         poss = []
         res_indexes = {}
@@ -217,16 +214,17 @@ class Partitioning:
                                    )
         mask_array = np.array(mask, copy=False, dtype=np.int8)
 
+        # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
         # Get the inner mask
-        inner_mask = gemmi.Int8Grid(*[grid.nu, grid.nv, grid.nw])
-        inner_mask.spacegroup = gemmi.find_spacegroup_by_name("P 1")
-        inner_mask.set_unit_cell(grid.unit_cell)
-        for atom in structure.protein_atoms():
-            pos = atom.pos
-            inner_mask.set_points_around(pos,
-                                   radius=mask_radius_symmetry,
-                                   value=1,
-                                   )
+        # inner_mask = gemmi.Int8Grid(*[grid.nu, grid.nv, grid.nw])
+        # inner_mask.spacegroup = gemmi.find_spacegroup_by_name("P 1")
+        # inner_mask.set_unit_cell(grid.unit_cell)
+        # for atom in structure.protein_atoms():
+        #     pos = atom.pos
+        #     inner_mask.set_points_around(pos,
+        #                            radius=mask_radius_symmetry,
+        #                            value=1,
+        #                            )
         # mask_array = np.array(mask, copy=False, dtype=np.int8)
 
         # Get the contact mask
@@ -236,9 +234,9 @@ class Partitioning:
         for atom in structure.protein_atoms():
             pos = atom.pos
             contact_mask.set_points_around(pos,
-                                         radius=4.0,
-                                         value=1,
-                                         )
+                                           radius=4.0,
+                                           value=1,
+                                           )
         # mask_array = np.array(mask, copy=False, dtype=np.int8)
 
         # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
@@ -318,8 +316,9 @@ class Partitioning:
             coord_array_unit_cell_in_mask[2][combined_indicies == 1],
         ] = 1
 
-        return Partitioning(partitions, mask,
-                            inner_mask,
+        return Partitioning(partitions,
+                            mask,
+                            # inner_mask  # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
                             contact_mask,
                             # symmetry_mask, # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
                             total_mask)
@@ -444,8 +443,12 @@ class Grid:
     partitioning: Partitioning
 
     @staticmethod
-    def from_reference(reference: Reference, mask_radius: float, mask_radius_symmetry: float,
-                       sample_rate: float = 3.0, ):
+    def from_reference(
+            reference: Reference,
+            mask_radius: float,
+            # mask_radius_symmetry: float, # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
+            sample_rate: float = 3.0,
+    ):
         unit_cell = Grid.unit_cell_from_reference(reference)
         spacing: typing.List[int] = Grid.spacing_from_reference(reference, sample_rate)
 
@@ -457,7 +460,8 @@ class Grid:
         partitioning = Partitioning.from_reference(reference,
                                                    grid,
                                                    mask_radius,
-                                                   mask_radius_symmetry)
+                                                   # mask_radius_symmetry, # THIS IS COMMENTED OUT AS PANDDA SPECIFIC
+                                                   )
 
         return Grid(grid, partitioning)
 

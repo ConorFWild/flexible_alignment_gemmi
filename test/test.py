@@ -14,7 +14,6 @@ def test(
         moving_mtz_path,
         output_map_path,
         outer_mask_radius=6.0,
-        inner_mask_symmetry=2.0,
         sample_rate=3.0,
         f="FWT",
         phi="PHWT",
@@ -56,7 +55,6 @@ def test(
     grid = Grid.from_reference(
         reference,
         outer_mask_radius,
-        inner_mask_symmetry,
         sample_rate=sample_rate,
     )
 
