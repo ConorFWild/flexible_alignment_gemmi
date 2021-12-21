@@ -5,10 +5,10 @@
 Just git pull and pip install!
 
 ```bash
-conda create -n pandda2 python=3.9
-conda activate pandda2
+conda create -n flexible_alignment python=3.9
+conda activate flexible_alignment
 conda install -c conda-forge fire numpy scipy pandas gemmi
-git clone https://github.com/ConorFWild/pandda_2_gemmi.git
+git clone https://github.com/ConorFWild/flexible_alignment_gemmi.git
 cd /path/to/cloned/repository
 pip install .
 
