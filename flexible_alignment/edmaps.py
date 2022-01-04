@@ -72,6 +72,12 @@ class Xmap:
 
         grid_array = np.array(new_grid, copy=False)
 
+        interpolated_values_tuple = (np.mod(interpolated_values_tuple[0], grid_array.shape[0]),
+                                     np.mod(interpolated_values_tuple[1], grid_array.shape[1]),
+                                     np.mod(interpolated_values_tuple[2], grid_array.shape[2]),
+                                     interpolated_values_tuple[3],
+                                     )
+
         print(interpolated_values_tuple[0:3])
         print(grid_array.shape)
 
