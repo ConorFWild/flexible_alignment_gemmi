@@ -307,7 +307,7 @@ class Partitioning:
                                int(coord_array_unit_cell_in_mask[1][i]),
                                int(coord_array_unit_cell_in_mask[2][i]),
                                )
-            partitions[res_id][coord_unit_cell] = position
+            partitions[res_id][coord] = position
 
         total_mask = np.zeros(mask_array.shape, dtype=np.int8)
         total_mask[
