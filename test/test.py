@@ -61,7 +61,7 @@ def test(
     print('Flexibly aligning datasets')
     flexibly_aligned_xmaps = {}
     for dtag, dataset in datasets.items():
-        flexibly_aligned_xmaps[dtag] = Xmap.from_unaligned_dataset_c(
+        flexibly_aligned_xmaps[dtag] = Xmap.from_unaligned_dataset(
             dataset,
             alignments[dtag],
             grid=grid,
