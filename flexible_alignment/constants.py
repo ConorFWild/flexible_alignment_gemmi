@@ -21,4 +21,5 @@ RESIDUE_NAMES = ["ALA",
                  "TRP",
                  "TYR",
                  "VAL",
+                 "GLY",
                  ]
